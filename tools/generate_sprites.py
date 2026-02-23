@@ -222,6 +222,47 @@ def make_lava_tile():
     px(img, 3, 6, BRIGHT_ORANGE)
     return img
 
+def make_enemy_jumper():
+    """8x8 ground jumper — squat monster that hops."""
+    img = Image.new("RGBA", (8, 8), BLACK)
+    c = RED
+    # Wide squat body
+    for x in range(1, 7):
+        px(img, x, 3, c)
+        px(img, x, 4, c)
+    for x in range(2, 6):
+        px(img, x, 2, c)
+        px(img, x, 5, c)
+    # Eyes (angry, wide set)
+    px(img, 2, 2, WHITE); px(img, 5, 2, WHITE)
+    # Horns / spikes on top
+    px(img, 2, 1, c); px(img, 5, 1, c)
+    px(img, 1, 0, c); px(img, 6, 0, c)
+    # Stubby legs
+    px(img, 1, 5, c); px(img, 6, 5, c)
+    px(img, 0, 6, c); px(img, 7, 6, c)
+    px(img, 0, 7, c); px(img, 7, 7, c)
+    return img
+
+def make_enemy_jumper_air():
+    """8x8 ground jumper — mid-jump, legs tucked."""
+    img = Image.new("RGBA", (8, 8), BLACK)
+    c = RED
+    # Same body but shifted up, legs tucked
+    for x in range(1, 7):
+        px(img, x, 2, c)
+        px(img, x, 3, c)
+    for x in range(2, 6):
+        px(img, x, 1, c)
+        px(img, x, 4, c)
+    # Eyes
+    px(img, 2, 1, WHITE); px(img, 5, 1, WHITE)
+    # Horns
+    px(img, 1, 0, c); px(img, 6, 0, c)
+    # Legs tucked under
+    px(img, 2, 5, c); px(img, 5, 5, c)
+    return img
+
 def make_arrow():
     """9x5 arrow projectile — proper arrowhead + fletching."""
     img = Image.new("RGBA", (9, 5), BLACK)
@@ -334,6 +375,8 @@ sprites = {
     "switch_off": make_switch_off(),
     "switch_on": make_switch_on(),
     "death_particles": make_death_particles(),
+    "enemy_jumper": make_enemy_jumper(),
+    "enemy_jumper_air": make_enemy_jumper_air(),
     "lava_tile": make_lava_tile(),
     "hud_dot": make_hud_dot(),
 }

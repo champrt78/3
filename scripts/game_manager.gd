@@ -1,14 +1,14 @@
 extends Node
 
-## Autoload singleton — tracks the pool and current room.
+## Autoload singleton — tracks strikes and current room.
 
-signal pool_changed(new_value: int)
+signal strikes_changed(new_value: int)
 signal player_died
 signal room_cleared
 
-const MAX_POOL := 3
+const MAX_STRIKES := 3
 
-var pool: int = MAX_POOL
+var strikes: int = 0
 var current_room_path: String = ""
 
 ## List of room scene paths in order.
@@ -18,37 +18,39 @@ var rooms: Array[String] = [
 ]
 
 func _ready() -> void:
-	pool = MAX_POOL
+	strikes = 0
 
-func spend() -> bool:
-	"""Spend 1 from the pool. Returns true if spent, false if pool is empty."""
-	if pool <= 0:
-		return false
-	pool -= 1
-	pool_changed.emit(pool)
-	return true
+func add_strike() -> void:
+	"""Add a strike. Called on floor touch or arrow shot."""
+	strikes += 1
+	strikes_changed.emit(strikes)
 
-func get_pool() -> int:
-	return pool
+func can_shoot() -> bool:
+	"""Can only shoot if under max strikes."""
+	return strikes < MAX_STRIKES
 
-func reset_pool() -> void:
-	pool = MAX_POOL
-	pool_changed.emit(pool)
+func is_dead() -> bool:
+	"""At max strikes, next floor touch = death."""
+	return strikes >= MAX_STRIKES
+
+func get_strikes() -> int:
+	return strikes
+
+func reset_strikes() -> void:
+	strikes = 0
+	strikes_changed.emit(strikes)
 
 func die() -> void:
 	player_died.emit()
-	reset_pool()
-	# Reload current room
+	reset_strikes()
 	get_tree().reload_current_scene()
 
 func clear_room() -> void:
 	room_cleared.emit()
-	reset_pool()
-	# Load next room
+	reset_strikes()
 	var current_index := rooms.find(current_room_path)
 	if current_index >= 0 and current_index < rooms.size() - 1:
 		get_tree().change_scene_to_file(rooms[current_index + 1])
 	else:
-		# Last room — you win! For now just reload.
 		print("You beat all rooms!")
 		get_tree().change_scene_to_file(rooms[0])

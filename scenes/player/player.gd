@@ -3,6 +3,10 @@ extends CharacterBody2D
 const SPEED := 200.0
 const JUMP_VELOCITY := -350.0
 const COYOTE_TIME := 0.08
+const AIM_POWER_MIN := 200.0
+const AIM_POWER_MAX := 500.0
+const AIM_CHARGE_SPEED := 400.0
+const AIM_ROTATE_SPEED := 2.5
 
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 var was_on_floor := false
@@ -11,8 +15,21 @@ var facing_right := true
 var on_vine: bool = false
 var vine_ref: Node2D = null
 
+# Aiming state
+var is_aiming := false
+var aim_angle := 0.0
+var aim_power := AIM_POWER_MIN
+var aim_arc_line: Line2D = null
+
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var arrow_scene: PackedScene = preload("res://scenes/player/arrow.tscn")
+
+func _ready() -> void:
+	aim_arc_line = Line2D.new()
+	aim_arc_line.width = 1.5
+	aim_arc_line.default_color = Color(1, 1, 1, 0.4)
+	aim_arc_line.visible = false
+	add_child(aim_arc_line)
 
 func _physics_process(delta: float) -> void:
 	if on_vine:
@@ -29,53 +46,103 @@ func _physics_process(delta: float) -> void:
 	if coyote_timer > 0:
 		coyote_timer -= delta
 
-	# Landing — costs 1 from pool
+	# Landing — adds a strike. If already at max, die.
 	if is_on_floor() and not was_on_floor:
 		_on_landed()
 
-	# Jump (only while on floor or coyote time)
-	if Input.is_action_just_pressed("jump"):
+	# Jump (only while on floor or coyote time, not while aiming)
+	if Input.is_action_just_pressed("jump") and not is_aiming:
 		if is_on_floor() or coyote_timer > 0:
 			velocity.y = JUMP_VELOCITY
 			coyote_timer = 0.0
 
 	# Horizontal movement
-	var direction := Input.get_axis("move_left", "move_right")
-	if direction:
-		velocity.x = direction * SPEED
-		facing_right = direction > 0
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED * 0.8)
+	if not is_aiming:
+		var direction := Input.get_axis("move_left", "move_right")
+		if direction:
+			velocity.x = direction * SPEED
+			facing_right = direction > 0
+		else:
+			velocity.x = move_toward(velocity.x, 0, SPEED * 0.8)
 
 	# Flip sprite
 	if sprite:
 		sprite.flip_h = not facing_right
 
-	# Shoot arrow
-	if Input.is_action_just_pressed("shoot"):
-		_shoot_arrow()
+	# Aim and shoot
+	_process_aiming(delta)
 
 	was_on_floor = is_on_floor()
 	move_and_slide()
 
-func _on_landed() -> void:
-	# Spend from pool. If pool was already 0, die.
-	if GameManager.get_pool() <= 0:
-		GameManager.die()
+func _process_aiming(delta: float) -> void:
+	# Can't shoot if already at max strikes
+	if not GameManager.can_shoot():
+		if is_aiming:
+			_cancel_aim()
 		return
-	GameManager.spend()
 
-func _shoot_arrow() -> void:
-	if GameManager.get_pool() <= 0:
-		return
-	GameManager.spend()
+	# Start aiming
+	if Input.is_action_just_pressed("shoot"):
+		is_aiming = true
+		aim_angle = -0.5 if facing_right else PI + 0.5
+		aim_power = AIM_POWER_MIN
+		aim_arc_line.visible = true
+
+	# While holding
+	if is_aiming and Input.is_action_pressed("shoot"):
+		var vert := 0.0
+		if Input.is_action_pressed("jump"):
+			vert = -1.0
+
+		if facing_right:
+			aim_angle -= vert * AIM_ROTATE_SPEED * delta
+			aim_angle = clamp(aim_angle, -PI * 0.85, -0.1)
+		else:
+			aim_angle += vert * AIM_ROTATE_SPEED * delta
+			aim_angle = clamp(aim_angle, PI + 0.1, PI + PI * 0.85)
+
+		aim_power = min(aim_power + AIM_CHARGE_SPEED * delta, AIM_POWER_MAX)
+		_draw_aim_arc()
+
+	# Release to fire
+	if is_aiming and Input.is_action_just_released("shoot"):
+		_fire_arrow()
+
+func _draw_aim_arc() -> void:
+	aim_arc_line.clear_points()
+	var launch_vel := Vector2(cos(aim_angle), sin(aim_angle)) * aim_power
+	var sim_pos := Vector2.ZERO
+	var sim_vel := launch_vel
+	var step := 0.03
+	var points := 25
+
+	for i in points:
+		aim_arc_line.add_point(sim_pos)
+		sim_vel.y += gravity * step
+		sim_pos += sim_vel * step
+
+func _fire_arrow() -> void:
+	GameManager.add_strike()
 	var arrow = arrow_scene.instantiate()
 	arrow.global_position = global_position
-	arrow.direction = 1.0 if facing_right else -1.0
+	arrow.launch_velocity = Vector2(cos(aim_angle), sin(aim_angle)) * aim_power
 	get_parent().add_child(arrow)
+	_cancel_aim()
+
+func _cancel_aim() -> void:
+	is_aiming = false
+	aim_arc_line.visible = false
+	aim_arc_line.clear_points()
+
+func _on_landed() -> void:
+	# At max strikes, floor touch = death
+	if GameManager.is_dead():
+		GameManager.die()
+		return
+	GameManager.add_strike()
 
 func _process_vine(delta: float) -> void:
-	# While on vine, movement is handled by the vine script
 	if Input.is_action_just_pressed("jump"):
 		release_vine()
 
@@ -83,6 +150,7 @@ func grab_vine(vine: Node2D) -> void:
 	on_vine = true
 	vine_ref = vine
 	velocity = Vector2.ZERO
+	_cancel_aim()
 
 func release_vine() -> void:
 	if vine_ref and vine_ref.has_method("get_release_velocity"):

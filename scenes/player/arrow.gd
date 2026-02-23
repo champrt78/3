@@ -28,7 +28,22 @@ func _on_body_entered(body: Node2D) -> void:
 		body.kill()
 		queue_free()
 	elif body.is_in_group("world"):
+		_alert_nearest_ghost()
 		queue_free()
+
+func _alert_nearest_ghost() -> void:
+	var ghosts := get_tree().get_nodes_in_group("ghosts")
+	if ghosts.is_empty():
+		return
+	var nearest: Node2D = null
+	var nearest_dist := INF
+	for ghost in ghosts:
+		var dist: float = global_position.distance_to(ghost.global_position)
+		if dist < nearest_dist:
+			nearest_dist = dist
+			nearest = ghost
+	if nearest and nearest.has_method("alert"):
+		nearest.alert()
 
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("switches"):

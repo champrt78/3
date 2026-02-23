@@ -345,12 +345,16 @@ def make_death_particles():
     return img
 
 def make_hud_dot():
-    """6x6 circle for HUD dots."""
+    """6x6 squiggly blob for HUD dots — imperfect, organic shape."""
     img = Image.new("RGBA", (6, 6), BLACK)
-    pixels = [(2,0),(3,0),(1,1),(2,1),(3,1),(4,1),
-              (0,2),(1,2),(2,2),(3,2),(4,2),(5,2),
-              (0,3),(1,3),(2,3),(3,3),(4,3),(5,3),
-              (1,4),(2,4),(3,4),(4,4),(2,5),(3,5)]
+    pixels = [
+                (1,0),(2,0),(3,0),
+        (0,1),(1,1),(2,1),(3,1),(4,1),
+        (0,2),(1,2),(2,2),(3,2),(4,2),
+        (0,3),(1,3),(2,3),(3,3),(4,3),(5,3),
+              (1,4),(2,4),(3,4),(4,4),
+                    (2,5),(3,5),
+    ]
     for x, y in pixels:
         px(img, x, y)
     return img

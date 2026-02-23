@@ -19,7 +19,7 @@ var swoop_interval := DORMANT_INTERVAL
 var swoop_speed := DORMANT_SPEED
 var telegraph_time := DORMANT_TELEGRAPH
 
-enum State { IDLE, TELEGRAPH, SWOOPING, RETURNING }
+enum State { IDLE, TELEGRAPH, SWOOPING }
 
 var state := State.IDLE
 var start_pos := Vector2.ZERO
@@ -69,20 +69,14 @@ func _physics_process(delta: float) -> void:
 				modulate.a = 1.0
 
 		State.SWOOPING:
+			# U-shaped swoop: drop down, sweep across, curve back up
 			swoop_progress += delta * swoop_speed
 			var t := clamp(swoop_progress, 0.0, 1.0)
-			global_position = start_pos + Vector2(
-				0,
-				sin(t * PI) * swoop_distance
-			)
-			if swoop_progress >= 1.0:
-				state = State.RETURNING
-				swoop_progress = 0.0
-
-		State.RETURNING:
-			swoop_progress += delta * swoop_speed * 0.6
-			var t := clamp(swoop_progress, 0.0, 1.0)
-			global_position = global_position.lerp(start_pos, t)
+			# Horizontal: sweep from left to right (or right to left)
+			var h := (t - 0.5) * swoop_distance * 1.5
+			# Vertical: U shape — deep in the middle, back up at edges
+			var v := sin(t * PI) * swoop_distance
+			global_position = start_pos + Vector2(h, v)
 			if swoop_progress >= 1.0:
 				global_position = start_pos
 				state = State.IDLE

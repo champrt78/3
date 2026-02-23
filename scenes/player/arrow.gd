@@ -28,6 +28,7 @@ func _on_body_entered(body: Node2D) -> void:
 		body.kill()
 		queue_free()
 	elif body.is_in_group("world"):
+		AudioManager.play("arrow_hit_wall")
 		_alert_nearest_ghost()
 		queue_free()
 

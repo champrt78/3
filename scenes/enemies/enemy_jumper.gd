@@ -29,6 +29,7 @@ func _physics_process(delta: float) -> void:
 		if timer >= ground_wait:
 			velocity.y = jump_height
 			timer = 0.0
+			AudioManager.play("jumper_bounce")
 
 	move_and_slide()
 
@@ -41,4 +42,5 @@ func _physics_process(delta: float) -> void:
 				body.kill()
 
 func kill() -> void:
+	AudioManager.play("death_jumper")
 	queue_free()

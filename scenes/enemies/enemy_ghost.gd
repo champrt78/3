@@ -48,6 +48,9 @@ func alert() -> void:
 	timer = 0.0
 	# Glow bright — your ass is grass
 	modulate = Color(1, 1, 1, 1.0)
+	# TODO: replace with proper "dun-dun-dunnnnn" ghost_alert stinger
+	# AudioManager.play("ghost_alert")
+	AudioManager.play("ghost_swoop", 3.0)
 
 func _physics_process(delta: float) -> void:
 	match state:
@@ -69,6 +72,9 @@ func _physics_process(delta: float) -> void:
 				modulate.a = 1.0
 
 		State.SWOOPING:
+			# Sound on swoop start
+			if swoop_progress == 0.0:
+				AudioManager.play("ghost_swoop")
 			# U-shaped swoop: drop down, sweep across, curve back up
 			swoop_progress += delta * swoop_speed
 			var t := clamp(swoop_progress, 0.0, 1.0)
@@ -87,4 +93,5 @@ func _on_body_entered(body: Node2D) -> void:
 		body.kill()
 
 func kill() -> void:
+	AudioManager.play("death_ghost")
 	queue_free()

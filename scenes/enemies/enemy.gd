@@ -35,4 +35,5 @@ func _physics_process(delta: float) -> void:
 				body.kill()
 
 func kill() -> void:
+	AudioManager.play("death_crawler")
 	queue_free()

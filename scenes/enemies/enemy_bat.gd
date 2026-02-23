@@ -36,4 +36,5 @@ func _on_body_entered(body: Node2D) -> void:
 		body.kill()
 
 func kill() -> void:
+	AudioManager.play("death_bat")
 	queue_free()

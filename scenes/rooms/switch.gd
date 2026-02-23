@@ -13,6 +13,7 @@ func activate() -> void:
 	if activated:
 		return
 	activated = true
+	AudioManager.play("switch_click")
 
 	# Visual feedback
 	modulate = Color(0.5, 1.0, 0.5)

@@ -21,6 +21,16 @@ var aim_angle := 0.0
 var aim_power := AIM_POWER_MIN
 var aim_arc_line: Line2D = null
 
+# Sprite textures
+var tex_idle: Texture2D
+var tex_run: Array[Texture2D] = []
+var tex_jump: Texture2D
+var tex_land: Texture2D
+var tex_swing: Texture2D
+var run_frame := 0
+var run_timer := 0.0
+const RUN_ANIM_SPEED := 0.12
+
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var arrow_scene: PackedScene = preload("res://scenes/player/arrow.tscn")
 
@@ -31,9 +41,21 @@ func _ready() -> void:
 	aim_arc_line.visible = false
 	add_child(aim_arc_line)
 
+	# Load sprite textures
+	tex_idle = preload("res://assets/sprites/player_idle.png")
+	tex_run.append(preload("res://assets/sprites/player_run1.png"))
+	tex_run.append(preload("res://assets/sprites/player_run2.png"))
+	tex_run.append(preload("res://assets/sprites/player_run3.png"))
+	tex_jump = preload("res://assets/sprites/player_jump.png")
+	tex_land = preload("res://assets/sprites/player_land.png")
+	tex_swing = preload("res://assets/sprites/player_swing.png")
+
+	sprite.texture = tex_idle
+
 func _physics_process(delta: float) -> void:
 	if on_vine:
 		_process_vine(delta)
+		_update_sprite(delta)
 		return
 
 	# Gravity
@@ -55,6 +77,7 @@ func _physics_process(delta: float) -> void:
 		if is_on_floor() or coyote_timer > 0:
 			velocity.y = JUMP_VELOCITY
 			coyote_timer = 0.0
+			AudioManager.play("jump")
 
 	# Horizontal movement
 	if not is_aiming:
@@ -74,6 +97,32 @@ func _physics_process(delta: float) -> void:
 
 	was_on_floor = is_on_floor()
 	move_and_slide()
+	_update_sprite(delta)
+
+func _update_sprite(delta: float) -> void:
+	if not sprite:
+		return
+
+	if on_vine:
+		sprite.texture = tex_swing
+		return
+
+	if not is_on_floor():
+		sprite.texture = tex_jump
+		run_timer = 0.0
+		return
+
+	var moving := abs(velocity.x) > 10.0
+	if moving:
+		run_timer += delta
+		if run_timer >= RUN_ANIM_SPEED:
+			run_timer -= RUN_ANIM_SPEED
+			run_frame = (run_frame + 1) % tex_run.size()
+		sprite.texture = tex_run[run_frame]
+	else:
+		sprite.texture = tex_idle
+		run_frame = 0
+		run_timer = 0.0
 
 func _process_aiming(delta: float) -> void:
 	# Can't shoot if already at max strikes
@@ -124,6 +173,7 @@ func _draw_aim_arc() -> void:
 
 func _fire_arrow() -> void:
 	GameManager.add_strike()
+	AudioManager.play("arrow_fire")
 	var arrow = arrow_scene.instantiate()
 	arrow.global_position = global_position
 	arrow.launch_velocity = Vector2(cos(aim_angle), sin(aim_angle)) * aim_power
@@ -138,8 +188,10 @@ func _cancel_aim() -> void:
 func _on_landed() -> void:
 	# At max strikes, floor touch = death
 	if GameManager.is_dead():
+		AudioManager.play("death_strike")
 		GameManager.die()
 		return
+	AudioManager.play("land")
 	GameManager.add_strike()
 
 func _process_vine(delta: float) -> void:
@@ -151,12 +203,19 @@ func grab_vine(vine: Node2D) -> void:
 	vine_ref = vine
 	velocity = Vector2.ZERO
 	_cancel_aim()
+	AudioManager.play("vine_grab")
 
 func release_vine() -> void:
 	if vine_ref and vine_ref.has_method("get_release_velocity"):
 		velocity = vine_ref.get_release_velocity()
 	on_vine = false
 	vine_ref = null
+	AudioManager.play("vine_drop")
 
 func kill() -> void:
+	AudioManager.play("death_strike")
+	GameManager.die()
+
+func kill_silent() -> void:
+	"""Kill without playing default death sound (caller handles audio)."""
 	GameManager.die()

@@ -24,6 +24,7 @@ func add_strike() -> void:
 	"""Add a strike. Called on floor touch or arrow shot."""
 	strikes += 1
 	strikes_changed.emit(strikes)
+	AudioManager.play("strike_blip")
 
 func can_shoot() -> bool:
 	"""Can only shoot if under max strikes."""

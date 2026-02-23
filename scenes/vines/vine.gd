@@ -13,6 +13,8 @@ var swing_angle := 0.0
 var swing_velocity := 0.0
 var player_ref: CharacterBody2D = null
 var snapped := false
+var creak_timer := 0.0
+const CREAK_INTERVAL := 0.6
 
 @onready var grab_area: Area2D = $GrabArea
 @onready var rope_line: Line2D = $RopeLine
@@ -39,6 +41,12 @@ func _physics_process(delta: float) -> void:
 
 		# Update visuals
 		_update_rope(offset)
+
+		# Creak sound while swinging
+		creak_timer += delta
+		if creak_timer >= CREAK_INTERVAL:
+			creak_timer -= CREAK_INTERVAL
+			AudioManager.play("vine_creak", -6.0)
 
 		# Snap timer
 		snap_timer += delta
@@ -74,6 +82,7 @@ func _on_body_entered(body: Node2D) -> void:
 		body.grab_vine(self)
 
 func _snap() -> void:
+	AudioManager.play("vine_break")
 	snapped = true
 	is_occupied = false
 	if player_ref and player_ref.has_method("release_vine"):

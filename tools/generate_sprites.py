@@ -19,84 +19,131 @@ def px(img, x, y, color=WHITE):
         img.putpixel((x, y), color)
 
 def make_player_idle():
-    """10x14 white stick figure — idle, better proportions."""
-    img = Image.new("RGBA", (10, 14), BLACK)
-    # Head (3x3 round)
-    for dx in range(3):
-        px(img, 4 + dx, 0)
-    px(img, 3, 1); px(img, 4, 1); px(img, 5, 1); px(img, 6, 1)
-    for dx in range(3):
-        px(img, 4 + dx, 2)
+    """7x10 side view — standing, facing right."""
+    img = Image.new("RGBA", (7, 10), BLACK)
+    # Head (2x2, small)
+    px(img, 3, 0); px(img, 4, 0)
+    px(img, 3, 1); px(img, 4, 1)
     # Neck
-    px(img, 5, 3)
-    # Shoulders + torso
-    px(img, 3, 4); px(img, 4, 4); px(img, 5, 4); px(img, 6, 4)
-    px(img, 4, 5); px(img, 5, 5)
-    px(img, 4, 6); px(img, 5, 6)
-    px(img, 4, 7); px(img, 5, 7)
-    # Arms hanging
-    px(img, 2, 4); px(img, 7, 4)
-    px(img, 2, 5); px(img, 7, 5)
-    px(img, 2, 6); px(img, 7, 6)
-    # Hips
-    px(img, 4, 8); px(img, 5, 8)
-    # Left leg
-    px(img, 3, 9); px(img, 3, 10); px(img, 3, 11); px(img, 2, 12); px(img, 2, 13)
-    # Right leg
-    px(img, 6, 9); px(img, 6, 10); px(img, 6, 11); px(img, 7, 12); px(img, 7, 13)
+    px(img, 3, 2)
+    # Torso
+    px(img, 3, 3); px(img, 3, 4); px(img, 3, 5)
+    # Arm (hanging down, front)
+    px(img, 4, 3); px(img, 4, 4)
+    # Legs (standing)
+    px(img, 3, 6)
+    px(img, 2, 7); px(img, 4, 7)
+    px(img, 2, 8); px(img, 4, 8)
+    px(img, 1, 9); px(img, 5, 9)
+    return img
+
+def make_player_run1():
+    """7x10 side view — run frame 1, legs apart."""
+    img = Image.new("RGBA", (7, 10), BLACK)
+    # Head
+    px(img, 3, 0); px(img, 4, 0)
+    px(img, 3, 1); px(img, 4, 1)
+    # Neck
+    px(img, 3, 2)
+    # Torso
+    px(img, 3, 3); px(img, 3, 4); px(img, 3, 5)
+    # Arms swinging (back arm back, front arm forward)
+    px(img, 2, 3); px(img, 5, 4)
+    # Legs apart (stride)
+    px(img, 3, 6)
+    px(img, 1, 7); px(img, 5, 7)
+    px(img, 0, 8); px(img, 6, 8)
+    return img
+
+def make_player_run2():
+    """7x10 side view — run frame 2, legs passing."""
+    img = Image.new("RGBA", (7, 10), BLACK)
+    # Head
+    px(img, 3, 0); px(img, 4, 0)
+    px(img, 3, 1); px(img, 4, 1)
+    # Neck
+    px(img, 3, 2)
+    # Torso
+    px(img, 3, 3); px(img, 3, 4); px(img, 3, 5)
+    # Arms swinging (opposite)
+    px(img, 5, 3); px(img, 2, 4)
+    # Legs together (passing)
+    px(img, 3, 6)
+    px(img, 3, 7)
+    px(img, 3, 8)
+    px(img, 2, 9)
+    return img
+
+def make_player_run3():
+    """7x10 side view — run frame 3, opposite stride."""
+    img = Image.new("RGBA", (7, 10), BLACK)
+    # Head
+    px(img, 3, 0); px(img, 4, 0)
+    px(img, 3, 1); px(img, 4, 1)
+    # Neck
+    px(img, 3, 2)
+    # Torso
+    px(img, 3, 3); px(img, 3, 4); px(img, 3, 5)
+    # Arms swinging
+    px(img, 5, 3); px(img, 2, 4)
+    # Legs apart (opposite stride)
+    px(img, 3, 6)
+    px(img, 5, 7); px(img, 1, 7)
+    px(img, 6, 8); px(img, 0, 8)
     return img
 
 def make_player_jump():
-    """10x14 stick figure — jumping, arms up, legs bent."""
-    img = Image.new("RGBA", (10, 14), BLACK)
+    """7x10 side view — in the air, legs tucked."""
+    img = Image.new("RGBA", (7, 10), BLACK)
     # Head
-    for dx in range(3):
-        px(img, 4 + dx, 0)
-    px(img, 3, 1); px(img, 4, 1); px(img, 5, 1); px(img, 6, 1)
-    for dx in range(3):
-        px(img, 4 + dx, 2)
+    px(img, 3, 0); px(img, 4, 0)
+    px(img, 3, 1); px(img, 4, 1)
     # Neck
-    px(img, 5, 3)
+    px(img, 3, 2)
     # Torso
-    px(img, 4, 4); px(img, 5, 4)
-    px(img, 4, 5); px(img, 5, 5)
-    px(img, 4, 6); px(img, 5, 6)
-    px(img, 4, 7); px(img, 5, 7)
-    # Arms up in a V
-    px(img, 3, 4); px(img, 6, 4)
-    px(img, 2, 3); px(img, 7, 3)
-    px(img, 1, 2); px(img, 8, 2)
-    # Hips
-    px(img, 4, 8); px(img, 5, 8)
-    # Legs tucked/bent
-    px(img, 3, 9); px(img, 6, 9)
-    px(img, 2, 10); px(img, 7, 10)
-    px(img, 2, 11); px(img, 7, 11)
+    px(img, 3, 3); px(img, 3, 4); px(img, 3, 5)
+    # Arms up
+    px(img, 2, 2); px(img, 5, 2)
+    # Legs tucked
+    px(img, 3, 6)
+    px(img, 2, 7); px(img, 4, 7)
+    return img
+
+def make_player_land():
+    """7x10 side view — landing impact, crouched."""
+    img = Image.new("RGBA", (7, 10), BLACK)
+    # Head (lower, crouched)
+    px(img, 3, 1); px(img, 4, 1)
+    px(img, 3, 2); px(img, 4, 2)
+    # Neck
+    px(img, 3, 3)
+    # Torso (compressed)
+    px(img, 3, 4); px(img, 3, 5)
+    # Arms out for balance
+    px(img, 1, 4); px(img, 2, 4); px(img, 4, 4); px(img, 5, 4)
+    # Legs bent wide (crouched)
+    px(img, 2, 6); px(img, 4, 6)
+    px(img, 1, 7); px(img, 5, 7)
+    px(img, 0, 8); px(img, 6, 8)
     return img
 
 def make_player_swing():
-    """10x14 stick figure — swinging, arms overhead."""
-    img = Image.new("RGBA", (10, 14), BLACK)
-    # Arms reaching up
-    px(img, 4, 0); px(img, 5, 0)
-    px(img, 3, 1); px(img, 6, 1)
+    """7x10 side view — hanging from vine, arms up."""
+    img = Image.new("RGBA", (7, 10), BLACK)
+    # Arms up (gripping vine)
+    px(img, 3, 0); px(img, 4, 0)
     # Head
-    for dx in range(3):
-        px(img, 4 + dx, 2)
-    px(img, 3, 3); px(img, 4, 3); px(img, 5, 3); px(img, 6, 3)
-    for dx in range(3):
-        px(img, 4 + dx, 4)
-    # Neck + torso
-    px(img, 5, 5)
-    px(img, 4, 6); px(img, 5, 6)
-    px(img, 4, 7); px(img, 5, 7)
-    px(img, 4, 8); px(img, 5, 8)
-    px(img, 4, 9); px(img, 5, 9)
+    px(img, 3, 1); px(img, 4, 1)
+    px(img, 3, 2); px(img, 4, 2)
+    # Neck
+    px(img, 3, 3)
+    # Torso
+    px(img, 3, 4); px(img, 3, 5)
+    px(img, 3, 6)
     # Legs dangling
-    px(img, 4, 10); px(img, 5, 10)
-    px(img, 3, 11); px(img, 6, 11)
-    px(img, 3, 12); px(img, 6, 12)
-    px(img, 2, 13); px(img, 7, 13)
+    px(img, 2, 7); px(img, 4, 7)
+    px(img, 2, 8); px(img, 4, 8)
+    px(img, 1, 9); px(img, 5, 9)
     return img
 
 def make_enemy_ground():
@@ -271,7 +318,11 @@ def make_hud_dot():
 # Generate all sprites
 sprites = {
     "player_idle": make_player_idle(),
+    "player_run1": make_player_run1(),
+    "player_run2": make_player_run2(),
+    "player_run3": make_player_run3(),
     "player_jump": make_player_jump(),
+    "player_land": make_player_land(),
     "player_swing": make_player_swing(),
     "enemy_ground": make_enemy_ground(),
     "enemy_bat": make_enemy_bat(),

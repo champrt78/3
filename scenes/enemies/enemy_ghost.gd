@@ -2,14 +2,26 @@ extends Area2D
 ## Ghost — starts dormant (floating idle). Gets alerted by missed arrows
 ## hitting walls, then goes aggressive with swooping attacks.
 
-@export var swoop_interval := 2.5
+## Dormant = slow, predictable swoops. Alerted = fast, aggressive.
 @export var swoop_distance := 120.0
-@export var swoop_speed := 2.5
-@export var telegraph_time := 0.6
 
-enum State { DORMANT, IDLE, TELEGRAPH, SWOOPING, RETURNING }
+# Dormant timing (chill, readable)
+const DORMANT_INTERVAL := 4.0
+const DORMANT_SPEED := 1.5
+const DORMANT_TELEGRAPH := 1.0
 
-var state := State.DORMANT
+# Alerted timing (oh no)
+const ALERTED_INTERVAL := 1.8
+const ALERTED_SPEED := 3.5
+const ALERTED_TELEGRAPH := 0.3
+
+var swoop_interval := DORMANT_INTERVAL
+var swoop_speed := DORMANT_SPEED
+var telegraph_time := DORMANT_TELEGRAPH
+
+enum State { IDLE, TELEGRAPH, SWOOPING, RETURNING }
+
+var state := State.IDLE
 var start_pos := Vector2.ZERO
 var timer := 0.0
 var swoop_progress := 0.0
@@ -21,26 +33,24 @@ func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("ghosts")
 	body_entered.connect(_on_body_entered)
-	# Dormant = dim, not threatening
-	modulate = Color(1, 1, 1, 0.4)
+	# Dormant = dim, slow swoops
+	modulate = Color(1, 1, 1, 0.5)
 
 func alert() -> void:
-	"""Called when an arrow hits a wall — wake up and get aggressive."""
+	"""Called when an arrow hits a wall — go aggressive."""
 	if alerted:
 		return
 	alerted = true
-	state = State.IDLE
+	# Switch to fast, aggressive timing
+	swoop_interval = ALERTED_INTERVAL
+	swoop_speed = ALERTED_SPEED
+	telegraph_time = ALERTED_TELEGRAPH
 	timer = 0.0
-	# Glow bright to show it's angry
+	# Glow bright — your ass is grass
 	modulate = Color(1, 1, 1, 1.0)
 
 func _physics_process(delta: float) -> void:
 	match state:
-		State.DORMANT:
-			# Just bob gently, not a threat
-			idle_bob += delta
-			global_position.y = start_pos.y + sin(idle_bob * 1.0) * 3.0
-
 		State.IDLE:
 			timer += delta
 			idle_bob += delta

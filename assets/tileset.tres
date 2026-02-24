@@ -1,0 +1,110 @@
+[gd_resource type="TileSet" format=3 uid="uid://bw1cqik7g56wk"]
+
+[ext_resource type="Texture2D" uid="uid://fx2631rcl1d" path="res://assets/sprites/platform_tile.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://o2otjku603ie" path="res://assets/sprites/wall_tile.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://ctm3dok5ve1bc" path="res://assets/sprites/edge_tile.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://cojeqjpff3ixe" path="res://assets/sprites/lava_tile.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://h8yvujv6ytpl" path="res://assets/sprites/pillar_top.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://4px1rfeb7e3j" path="res://assets/sprites/pillar_mid.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://bcb22nmf6k27l" path="res://assets/sprites/pillar_bottom.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://crsvlpkt02jap" path="res://assets/sprites/corner_top_left.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://cfr0rmocsarsg" path="res://assets/sprites/corner_top_right.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://iynn42dxdwpv" path="res://assets/sprites/edge_slope_right.png" id="10"]
+[ext_resource type="Texture2D" uid="uid://hvtgaphjccim" path="res://assets/sprites/edge_slope_left.png" id="11"]
+[ext_resource type="Texture2D" uid="uid://c8sp4eq656dc0" path="res://assets/sprites/edge_slope_right_bottom.png" id="12"]
+[ext_resource type="Texture2D" uid="uid://d4e4xwmcs2o81" path="res://assets/sprites/edge_slope_left_bottom.png" id="13"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_platform"]
+texture = ExtResource("1")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wall"]
+texture = ExtResource("2")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_slope_left"]
+texture = ExtResource("11")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, 4, -4, 4)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_slope_right_bottom"]
+texture = ExtResource("12")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, -4, 4)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_slope_left_bottom"]
+texture = ExtResource("13")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_edge"]
+texture = ExtResource("3")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lava"]
+texture = ExtResource("4")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pillar_top"]
+texture = ExtResource("5")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pillar_mid"]
+texture = ExtResource("6")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pillar_bottom"]
+texture = ExtResource("7")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_corner_top_left"]
+texture = ExtResource("8")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_corner_top_right"]
+texture = ExtResource("9")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_slope_right"]
+texture = ExtResource("10")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, 4, 4, -4, 4, 4)
+
+[resource]
+tile_size = Vector2i(8, 8)
+physics_layer_0/collision_layer = 2
+physics_layer_0/collision_mask = 0
+sources/0 = SubResource("TileSetAtlasSource_platform")
+sources/1 = SubResource("TileSetAtlasSource_wall")
+sources/2 = SubResource("TileSetAtlasSource_edge")
+sources/3 = SubResource("TileSetAtlasSource_lava")
+sources/4 = SubResource("TileSetAtlasSource_pillar_top")
+sources/5 = SubResource("TileSetAtlasSource_pillar_mid")
+sources/6 = SubResource("TileSetAtlasSource_pillar_bottom")
+sources/7 = SubResource("TileSetAtlasSource_corner_top_left")
+sources/8 = SubResource("TileSetAtlasSource_corner_top_right")
+sources/9 = SubResource("TileSetAtlasSource_slope_right")
+sources/10 = SubResource("TileSetAtlasSource_slope_left")
+sources/11 = SubResource("TileSetAtlasSource_slope_right_bottom")
+sources/12 = SubResource("TileSetAtlasSource_slope_left_bottom")

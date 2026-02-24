@@ -30,7 +30,7 @@ func _physics_process(delta: float) -> void:
 	for i in get_slide_collision_count():
 		var collision := get_slide_collision(i)
 		if collision.get_collider() is CharacterBody2D:
-			var body = collision.get_collider()
+			var body: Node2D = collision.get_collider() as Node2D
 			if body.has_method("kill"):
 				body.kill()
 

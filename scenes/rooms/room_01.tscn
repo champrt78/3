@@ -1,78 +1,395 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=28 format=3 uid="uid://cqj7cmby6w1af"]
 
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/vines/vine.tscn" id="3"]
-[ext_resource type="Script" path="res://scenes/rooms/exit_zone.gd" id="4"]
+[ext_resource type="Script" uid="uid://bc6qjvurqftqq" path="res://scenes/rooms/exit_zone.gd" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/title_screen.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/enemy_bat.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/enemy_ghost.tscn" id="7"]
+[ext_resource type="Script" uid="uid://4gfs7dvi2ijh" path="res://scenes/rooms/lava_zone.gd" id="8"]
+[ext_resource type="Script" uid="uid://b210nbtnsc5em" path="res://scenes/rooms/switch.gd" id="9"]
+[ext_resource type="Script" uid="uid://d15qf05yyrbs5" path="res://scenes/rooms/vine_drop.gd" id="10"]
+[ext_resource type="Texture2D" uid="uid://b8y5d5pncfgsb" path="res://assets/sprites/platform_tile.png" id="11"]
+[ext_resource type="Texture2D" uid="uid://cue06s5m3ykmr" path="res://assets/sprites/lava_tile.png" id="12"]
+[ext_resource type="Texture2D" uid="uid://5sc0lyt24vq8" path="res://assets/sprites/exit.png" id="13"]
 
-[sub_resource type="RectangleShape2D" id="floor_shape"]
-size = Vector2(640, 20)
+[sub_resource type="RectangleShape2D" id="ceiling_shape"]
+size = Vector2(640, 24)
+
+[sub_resource type="RectangleShape2D" id="stala_left"]
+size = Vector2(96, 48)
+
+[sub_resource type="RectangleShape2D" id="stala_center"]
+size = Vector2(72, 24)
+
+[sub_resource type="RectangleShape2D" id="stala_right"]
+size = Vector2(120, 24)
+
+[sub_resource type="RectangleShape2D" id="wall_full"]
+size = Vector2(24, 480)
+
+[sub_resource type="RectangleShape2D" id="wall_24_96"]
+size = Vector2(24, 96)
+
+[sub_resource type="RectangleShape2D" id="wall_24_48"]
+size = Vector2(24, 48)
+
+[sub_resource type="RectangleShape2D" id="wall_24_120"]
+size = Vector2(24, 120)
+
+[sub_resource type="RectangleShape2D" id="wall_24_72"]
+size = Vector2(24, 72)
+
+[sub_resource type="RectangleShape2D" id="ledge_72"]
+size = Vector2(72, 24)
+
+[sub_resource type="RectangleShape2D" id="pillar_shape"]
+size = Vector2(24, 72)
+
+[sub_resource type="CircleShape2D" id="switch_shape"]
 
 [sub_resource type="RectangleShape2D" id="exit_shape"]
-size = Vector2(20, 40)
+size = Vector2(24, 40)
+
+[sub_resource type="RectangleShape2D" id="lava_shape"]
+size = Vector2(640, 24)
 
 [node name="Room01" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1")]
-position = Vector2(40, 420)
+position = Vector2(60, 381)
 
 [node name="HUD" parent="." instance=ExtResource("2")]
 
-[node name="Vine1" parent="." instance=ExtResource("3")]
-position = Vector2(200, 100)
-
-[node name="Vine2" parent="." instance=ExtResource("3")]
-position = Vector2(400, 80)
-
-[node name="Floor" type="StaticBody2D" parent="."]
-position = Vector2(320, 470)
-collision_layer = 2
-
-[node name="FloorShape" type="CollisionShape2D" parent="Floor"]
-shape = SubResource("floor_shape")
-
-[node name="FloorSprite" type="ColorRect" parent="Floor"]
-offset_left = -320.0
-offset_top = -10.0
-offset_right = 320.0
-offset_bottom = 10.0
-color = Color(0.25, 0.25, 0.25, 1)
-
-[node name="LeftWall" type="StaticBody2D" parent="."]
-position = Vector2(-10, 240)
-collision_layer = 2
-
-[node name="WallShape" type="CollisionShape2D" parent="LeftWall"]
-shape = SubResource("floor_shape")
-rotation = 1.5708
-
-[node name="RightWall" type="StaticBody2D" parent="."]
-position = Vector2(650, 240)
-collision_layer = 2
-
-[node name="WallShape" type="CollisionShape2D" parent="RightWall"]
-shape = SubResource("floor_shape")
-rotation = 1.5708
+[node name="TitleScreen" parent="." instance=ExtResource("5")]
 
 [node name="Ceiling" type="StaticBody2D" parent="."]
-position = Vector2(320, -10)
+position = Vector2(320, 12)
 collision_layer = 2
 
-[node name="CeilingShape" type="CollisionShape2D" parent="Ceiling"]
-shape = SubResource("floor_shape")
+[node name="Shape" type="CollisionShape2D" parent="Ceiling"]
+shape = SubResource("ceiling_shape")
+
+[node name="Sprite" type="Sprite2D" parent="Ceiling"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 216, 8)
+
+[node name="StalactiteLeft" type="StaticBody2D" parent="."]
+position = Vector2(88, 48)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="StalactiteLeft"]
+shape = SubResource("stala_left")
+
+[node name="Sprite" type="Sprite2D" parent="StalactiteLeft"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 16)
+
+[node name="StalactiteCenter" type="StaticBody2D" parent="."]
+position = Vector2(330, 36)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="StalactiteCenter"]
+shape = SubResource("stala_center")
+
+[node name="Sprite" type="Sprite2D" parent="StalactiteCenter"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 24, 8)
+
+[node name="StalactiteRight" type="StaticBody2D" parent="."]
+position = Vector2(580, 36)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="StalactiteRight"]
+shape = SubResource("stala_right")
+
+[node name="Sprite" type="Sprite2D" parent="StalactiteRight"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 40, 8)
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+position = Vector2(12, 240)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("wall_full")
+
+[node name="Sprite" type="Sprite2D" parent="LeftWall"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 8, 160)
+
+[node name="LeftWallTopThick" type="StaticBody2D" parent="."]
+position = Vector2(36, 48)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="LeftWallTopThick"]
+shape = SubResource("wall_24_96")
+
+[node name="Sprite" type="Sprite2D" parent="LeftWallTopThick"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 8, 32)
+
+[node name="LeftWallBottomThick" type="StaticBody2D" parent="."]
+position = Vector2(36, 432)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="LeftWallBottomThick"]
+shape = SubResource("wall_24_96")
+
+[node name="Sprite" type="Sprite2D" parent="LeftWallBottomThick"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 8, 32)
+
+[node name="LeftWallExtraThick" type="StaticBody2D" parent="."]
+position = Vector2(60, 456)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="LeftWallExtraThick"]
+shape = SubResource("wall_24_48")
+
+[node name="Sprite" type="Sprite2D" parent="LeftWallExtraThick"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 8, 16)
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+position = Vector2(628, 240)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("wall_full")
+
+[node name="Sprite" type="Sprite2D" parent="RightWall"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 8, 160)
+
+[node name="RightWallTopThick" type="StaticBody2D" parent="."]
+position = Vector2(604, 60)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="RightWallTopThick"]
+shape = SubResource("wall_24_120")
+
+[node name="Sprite" type="Sprite2D" parent="RightWallTopThick"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 8, 40)
+
+[node name="RightWallBottomThick" type="StaticBody2D" parent="."]
+position = Vector2(604, 420)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="RightWallBottomThick"]
+shape = SubResource("wall_24_120")
+
+[node name="Sprite" type="Sprite2D" parent="RightWallBottomThick"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 8, 40)
+
+[node name="RightWallExtraThick" type="StaticBody2D" parent="."]
+position = Vector2(580, 444)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="RightWallExtraThick"]
+shape = SubResource("wall_24_72")
+
+[node name="Sprite" type="Sprite2D" parent="RightWallExtraThick"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 8, 24)
+
+[node name="StartLedge" type="StaticBody2D" parent="."]
+position = Vector2(60, 400)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="StartLedge"]
+shape = SubResource("ledge_72")
+
+[node name="Sprite" type="Sprite2D" parent="StartLedge"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 24, 8)
+
+[node name="StepPlatform" type="StaticBody2D" parent="."]
+position = Vector2(150, 355)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="StepPlatform"]
+shape = SubResource("ledge_72")
+
+[node name="Sprite" type="Sprite2D" parent="StepPlatform"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 24, 8)
+
+[node name="MidPlatformLow" type="StaticBody2D" parent="."]
+position = Vector2(300, 310)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="MidPlatformLow"]
+shape = SubResource("ledge_72")
+
+[node name="Sprite" type="Sprite2D" parent="MidPlatformLow"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 24, 8)
+
+[node name="MidPlatformHigh" type="StaticBody2D" parent="."]
+position = Vector2(380, 260)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="MidPlatformHigh"]
+shape = SubResource("ledge_72")
+
+[node name="Sprite" type="Sprite2D" parent="MidPlatformHigh"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 24, 8)
+
+[node name="UpperPlatform" type="StaticBody2D" parent="."]
+position = Vector2(520, 200)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="UpperPlatform"]
+shape = SubResource("ledge_72")
+
+[node name="Sprite" type="Sprite2D" parent="UpperPlatform"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 24, 8)
+
+[node name="ExitLedge" type="StaticBody2D" parent="."]
+position = Vector2(590, 150)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="ExitLedge"]
+shape = SubResource("ledge_72")
+
+[node name="Sprite" type="Sprite2D" parent="ExitLedge"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 24, 8)
+
+[node name="LavaPillar" type="StaticBody2D" parent="."]
+position = Vector2(250, 432)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="LavaPillar"]
+shape = SubResource("pillar_shape")
+
+[node name="Sprite" type="Sprite2D" parent="LavaPillar"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+region_enabled = true
+region_rect = Rect2(0, 0, 8, 24)
+
+[node name="Bat" parent="." instance=ExtResource("6")]
+position = Vector2(260, 170)
+
+[node name="Ghost" parent="." instance=ExtResource("7")]
+position = Vector2(440, 230)
+
+[node name="Switch1" type="Area2D" parent="."]
+position = Vector2(350, 290)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("9")
+target_path = NodePath("../VineDrop")
+
+[node name="SwitchShape" type="CollisionShape2D" parent="Switch1"]
+shape = SubResource("switch_shape")
+
+[node name="SwitchSprite" type="Sprite2D" parent="Switch1"]
+modulate = Color(1, 0.6, 0.1, 1)
+scale = Vector2(3, 3)
+texture = ExtResource("11")
+
+[node name="Vine1" parent="." instance=ExtResource("3")]
+position = Vector2(200, 28)
+rope_length = 300.0
+
+[node name="VineDrop" type="Node2D" parent="."]
+position = Vector2(330, 52)
+script = ExtResource("10")
+drop_distance = 120.0
+
+[node name="Vine" parent="VineDrop" instance=ExtResource("3")]
+rope_length = 200.0
+
+[node name="Vine2" parent="." instance=ExtResource("3")]
+position = Vector2(430, 28)
+rope_length = 210.0
 
 [node name="ExitZone" type="Area2D" parent="."]
-position = Vector2(610, 430)
+position = Vector2(578, 112)
 collision_layer = 16
-collision_mask = 1
 script = ExtResource("4")
 
 [node name="ExitShape" type="CollisionShape2D" parent="ExitZone"]
 shape = SubResource("exit_shape")
 
-[node name="ExitSprite" type="ColorRect" parent="ExitZone"]
-offset_left = -10.0
-offset_top = -20.0
-offset_right = 10.0
-offset_bottom = 20.0
-color = Color(0.3, 1, 0.3, 1)
+[node name="ExitSprite" type="Sprite2D" parent="ExitZone"]
+scale = Vector2(3, 3)
+texture = ExtResource("13")
+
+[node name="Lava" type="Area2D" parent="."]
+position = Vector2(320, 468)
+collision_layer = 0
+script = ExtResource("8")
+
+[node name="LavaShape" type="CollisionShape2D" parent="Lava"]
+shape = SubResource("lava_shape")
+
+[node name="LavaSprite" type="Sprite2D" parent="Lava"]
+texture_repeat = 2
+scale = Vector2(3, 3)
+texture = ExtResource("12")
+region_enabled = true
+region_rect = Rect2(0, 0, 216, 8)

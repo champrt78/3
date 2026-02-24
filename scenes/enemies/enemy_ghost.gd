@@ -77,11 +77,11 @@ func _physics_process(delta: float) -> void:
 				AudioManager.play("ghost_swoop")
 			# U-shaped swoop: drop down, sweep across, curve back up
 			swoop_progress += delta * swoop_speed
-			var t := clamp(swoop_progress, 0.0, 1.0)
+			var t := clampf(swoop_progress, 0.0, 1.0)
 			# Horizontal: sweep from left to right (or right to left)
-			var h := (t - 0.5) * swoop_distance * 1.5
+			var h: float = (t - 0.5) * swoop_distance * 1.5
 			# Vertical: U shape — deep in the middle, back up at edges
-			var v := sin(t * PI) * swoop_distance
+			var v: float = sin(t * PI) * swoop_distance
 			global_position = start_pos + Vector2(h, v)
 			if swoop_progress >= 1.0:
 				global_position = start_pos

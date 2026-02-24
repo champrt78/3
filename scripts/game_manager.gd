@@ -49,6 +49,8 @@ func die() -> void:
 func clear_room() -> void:
 	room_cleared.emit()
 	reset_strikes()
+	# Derive current room from scene tree — no need to manually track
+	current_room_path = get_tree().current_scene.scene_file_path
 	var current_index := rooms.find(current_room_path)
 	if current_index >= 0 and current_index < rooms.size() - 1:
 		get_tree().change_scene_to_file(rooms[current_index + 1])

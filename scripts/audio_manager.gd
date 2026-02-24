@@ -56,11 +56,14 @@ func _ready() -> void:
 		players.append(player)
 
 	# Preload all sounds
-	for key in sound_map:
+	var keys: Array = sound_map.keys()
+	for i in keys.size():
+		var key: String = keys[i]
 		sounds[key] = []
-		for filename in sound_map[key]:
-			var path := SFX_PATH + filename
-			var stream := load(path)
+		var filenames: Array = sound_map[key]
+		for j in filenames.size():
+			var path: String = SFX_PATH + str(filenames[j])
+			var stream: Resource = load(path)
 			if stream:
 				sounds[key].append(stream)
 

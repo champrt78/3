@@ -1,9 +1,10 @@
 extends Area2D
 
-const MAX_LIFETIME := 3.0
+const MAX_LIFETIME := 6.0
+const GRAVITY_MULT := 0.8  # gentle arc — travels far
 
 var launch_velocity := Vector2.ZERO
-var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
+var world_gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 var lifetime := 0.0
 
 func _ready() -> void:
@@ -12,7 +13,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	# Gravity arc
-	launch_velocity.y += gravity * delta
+	launch_velocity.y += world_gravity * GRAVITY_MULT * delta
 	position += launch_velocity * delta
 
 	# Rotate arrow to match flight direction
@@ -33,12 +34,15 @@ func _on_body_entered(body: Node2D) -> void:
 		queue_free()
 
 func _alert_nearest_ghost() -> void:
-	var ghosts := get_tree().get_nodes_in_group("ghosts")
+	var ghosts: Array[Node] = get_tree().get_nodes_in_group("ghosts")
 	if ghosts.is_empty():
 		return
 	var nearest: Node2D = null
 	var nearest_dist := INF
-	for ghost in ghosts:
+	for i in ghosts.size():
+		var ghost: Node2D = ghosts[i] as Node2D
+		if not ghost:
+			continue
 		var dist: float = global_position.distance_to(ghost.global_position)
 		if dist < nearest_dist:
 			nearest_dist = dist
@@ -47,6 +51,10 @@ func _alert_nearest_ghost() -> void:
 		nearest.alert()
 
 func _on_area_entered(area: Area2D) -> void:
-	if area.is_in_group("switches"):
+	if area.is_in_group("enemies"):
+		if area.has_method("kill"):
+			area.kill()
+		queue_free()
+	elif area.is_in_group("switches"):
 		area.activate()
 		queue_free()
